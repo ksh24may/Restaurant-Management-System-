@@ -1,0 +1,135 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial, sans-serif; text-align: center; }
+        h1 { color: #ff6600; }
+        .container { width: 80%; margin: auto; padding: 20px; }
+        .search-filter { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        input, select { padding: 8px; font-size: 16px; }
+        .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .menu-item { background: #292929; padding: 15px; border-radius: 10px; transition: 0.3s; }
+        .menu-item:hover { background: #ff6600; }
+        .menu-item img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
+        .menu-item h3 { margin: 10px 0; }
+        .menu-item p { margin: 5px 0; }
+        .btn { background: #ff6600; color: white; padding: 10px; border: none; cursor: pointer; }
+        .btn:hover { background: #cc5200; }
+        .cart { background: #1e1e1e; padding: 15px; border-radius: 10px; margin-top: 20px; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>📜 Our Menu</h1>
+    <div class="search-filter">
+        <input type="text" id="search" placeholder="Search dishes..." onkeyup="filterMenu()">
+        <select id="categoryFilter" onchange="filterMenu()">
+            <option value="">All Categories</option>
+            <option value="Starter">Starter</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Dessert">Dessert</option>
+        </select>
+    </div>
+    <div class="container">
+        <div class="menu" id="menuList"></div>
+    </div>
+    <div class="container cart">
+        <h2>🛒 Your Cart</h2>
+        <div id="cartItems"></div>
+        <h3>Total: Rs.<span id="cartTotal">0.00</span></h3>
+        <button class="btn" onclick="checkout()">✅ Checkout</button>
+    </div>
+    <script>
+        let menuData = [
+            { id: 1, name: "Margherita Pizza", price: 290, category: "Main Course", image: "https://thepizzasecret.com/wp-content/uploads/2023/05/20220211142754-margherita-9920.jpg" },
+            { id: 2, name: "Caesar Salad", price: 80, category: "Starter", image: "https://images.unsplash.com/photo-1547592180-85f173990554" },
+            { id: 3, name: "Spaghetti Bolognese", price: 150, category: "Main Course", image: "https://www.untamedchefcooking.com/wp-content/uploads/2018/01/Spaghetti-Bolognese.png" },
+            { id: 4, name: "Chocolate Cake", price: 270, category: "Dessert", image: "https://media.bakingo.com/sq-snicker-chocolate-cake0028choc-AA.jpg" },
+            {id: 5, name: "Veg Hariyali Kababs", price: 170, category: "Starter", image:"https://png.pngtree.com/png_detail/20181019/kebab-png-clipart_2312351.png"},
+            { id: 6, name: "Garlic Bread", price: 90, category: "Starter", image:"https://wallpapercave.com/wp/wp2443226.jpg"},
+            { id: 7, name: "Custards",price: 120,category: "Dessert",image:"https://www.archanaskitchen.com/images/archanaskitchen/0-Archanas-Kitchen-Recipes/2017/15-june/Recipe_For_Beginners_Fruit_Custard_Recipe_With_Custard_Powder-1.jpg"},
+            { id: 8, name: "Kaju Paneer", price: 260, category: "Main Course", image: "https://i.pinimg.com/736x/48/a7/75/48a77549540b4c55e218ef74b06d574d.jpg"},
+            { id: 9, name: "Donuts" , price: 120, category: "Dessert",image:"https://getwallpapers.com/wallpaper/full/6/8/3/773316-top-donuts-wallpapers-2048x1152-for-meizu.jpg"}
+        ];
+
+        let cart = [];
+
+        function loadMenu() {
+            const menuList = document.getElementById("menuList");
+            menuList.innerHTML = "";
+            menuData.forEach(item => {
+                menuList.innerHTML += `
+                    <div class="menu-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <h3>${item.name}</h3>
+                        <p>Rs.${item.price}</p>
+                        <button class="btn" onclick="addToCart(${item.id})">➕ Add to Cart</button>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(id) {
+            const item = menuData.find(d => d.id === id);
+            cart.push(item);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById("cartItems");
+            const cartTotal = document.getElementById("cartTotal");
+            cartItems.innerHTML = "";
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name} - Rs.${item.price}</span>
+                        <button onclick="removeFromCart(${index})">❌</button>
+                    </div>
+                `;
+            });
+            cartTotal.innerText = total.toFixed(2);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function filterMenu() {
+            const searchText = document.getElementById("search").value.toLowerCase();
+            const category = document.getElementById("categoryFilter").value;
+            const filtered = menuData.filter(item =>
+                item.name.toLowerCase().includes(searchText) &&
+                (category === "" || item.category === category)
+            );
+            const menuList = document.getElementById("menuList");
+            menuList.innerHTML = "";
+            filtered.forEach(item => {
+                menuList.innerHTML += `
+                    <div class="menu-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <h3>${item.name}</h3>
+                        <p>Rs.${item.price}</p>
+                        <button class="btn" onclick="addToCart(${item.id})">➕ Add to Cart</button>
+                    </div>
+                `;
+            });
+        }
+
+        function checkout() {
+            if (cart.length === 0) return alert("Cart is empty!");
+            localStorage.setItem("orders", JSON.stringify(cart));
+            alert("✅ Order placed! Check 'Orders' page.");
+            cart = [];
+            updateCart();
+        }
+
+        loadMenu();
+    </script>
+</body>
+</html>

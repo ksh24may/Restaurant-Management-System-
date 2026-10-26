@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #ff6600; }
+        
+        /* Payment Methods */
+        .payment-container { background: #292929; padding: 20px; width: 350px; margin: 20px auto; border-radius: 10px; }
+        .option { padding: 10px; margin: 10px 0; background: #1e1e1e; color: white; border: none; cursor: pointer; border-radius: 5px; width: 100%; text-align: left; }
+        .option:hover, .selected { background: #ff6600; }
+
+        /* QR Code */
+        .qr-container { display: none; margin-top: 20px; }
+        .qr-container img { width: 200px; border-radius: 10px; }
+
+        /* Transaction History */
+        .history-container { margin-top: 20px; text-align: left; width: 350px; margin: auto; }
+        .history { background: #1e1e1e; padding: 10px; border-radius: 5px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>💳 Payment Page</h1>
+
+    <div class="payment-container">
+        <h2>Select Payment Method</h2>
+        <button class="option" onclick="selectPayment('upi')">📲 UPI</button>
+        <button class="option" onclick="selectPayment('card')">💳 Debit/Credit Card</button>
+        <button class="option" onclick="selectPayment('cod')">💵 Cash on Delivery (COD)</button>
+        <button class="option" onclick="selectPayment('wallet')">🔵 Wallet (Paytm, PhonePe, GPay)</button>
+
+        <div class="qr-container" id="qrContainer">
+            <h3>Scan QR to Pay</h3>
+            <img src="https://targetpcslucknow.com/wp-content/uploads/2019/06/Paytm_Target-PCS-2765277511-1559715172689.jpeg" alt="QR Code">
+        </div>
+
+        <button class="option" style="background: green; color: white;" onclick="confirmPayment()">✅ Confirm Payment</button>
+    </div>
+
+    <div class="history-container">
+        <h2>🧾 Transaction History</h2>
+        <div id="history"></div>
+    </div>
+
+    <script>
+        let selectedMethod = "";
+
+        function selectPayment(method) {
+            selectedMethod = method;
+            document.querySelectorAll(".option").forEach(btn => btn.classList.remove("selected"));
+            event.target.classList.add("selected");
+
+            if (method === "upi" || method === "wallet") {
+                document.getElementById("qrContainer").style.display = "block";
+            } else {
+                document.getElementById("qrContainer").style.display = "none";
+            }
+        }
+
+        function confirmPayment() {
+            if (!selectedMethod) {
+                alert("Please select a payment method.");
+                return;
+            }
+            const transaction = `✅ ${new Date().toLocaleString()} - Paid via ${selectedMethod.toUpperCase()}`;
+            document.getElementById("history").innerHTML += `<div class="history">${transaction}</div>`;
+            alert("Payment Successful!");
+        }
+    </script>
+
+</body>
+</html>

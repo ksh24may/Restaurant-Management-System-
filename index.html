@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Management System</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f2f2;
+            color: rgb(244, 238, 238);
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #1e1e1e;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(224, 199, 199, 0.5);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: #ff6600;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 15px;
+            background: #292929;
+            border: none;
+            color: rgb(244, 234, 234);
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar button:hover, .sidebar button.active {
+            background: #ff6600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .main-content h1 {
+            color: #ff6600;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Slider */
+        .slider-container {
+            width: 90%;
+            max-width: 1000px;
+            height: 500px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 4.0s ease-in-out; /* Slower transition time */
+            width: 400%;
+            height: 100%;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f07c7c;
+            font-size: 24px;
+            color: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .slide img {
+            width: 30%;
+            height: 80%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        /* Slider Controls */
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(216, 183, 183, 0.5);
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: 0.9s;
+        }
+
+        .prev { left: 10px; }
+        .next { right: 10px; }
+        .prev:hover, .next:hover { background: rgba(255, 102, 0, 0.9); }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <h2>🍽️ Restaurant System</h2>
+        <button onclick="loadContent('admin', this)" class="active">🔧 Admin</button>
+        <button onclick="loadContent('menu', this)">📜 Menu</button>
+        <button onclick="loadContent('order', this)">🛒 Orders</button>
+        <button onclick="loadContent('payment', this)">💳 Payment</button>
+        <button onclick="loadContent('waiter', this)">🧑‍🍳 Waiters</button>
+        <button onclick="loadContent('reservation', this)">📅 Reservations</button>
+        <button onclick="loadContent('delivery', this)">🚴‍♂️ Delivery</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Welcome to the Restaurant Management System</h1>
+
+        <!-- Slider -->
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide"><img src="https://img.freepik.com/premium-photo/fresh-homemade-italian-pizza-margherita-with-buffalo-mozzarella-basil_914391-419.jpg?w=2000" alt="Pizza"></div>
+                <div class="slide"><img src="https://insanelygoodrecipes.com/wp-content/uploads/2020/02/Burger-and-Fries.jpg" alt="Burger"></div>
+                <div class="slide"><img src="https://www.thespruceeats.com/thmb/ywCkY0K2yJrw2yF4fduE_7Jvv08=/4200x2800/filters:fill(auto,1)/tuna-salad-sushi-roll-2031511-step-Hero_1-54ce74f3cd40401fb855765eac31dce9.jpg" alt="Sushi"></div>
+                <div class="slide"><img src="https://i.ytimg.com/vi/iQ38VKAjQgo/maxresdefault.jpg" alt="Pasta"></div>
+            </div>
+            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        function loadContent(page, button) {
+            $(".sidebar button").removeClass("active");
+            $(button).addClass("active");
+
+            $.ajax({
+                url: '/' + page,
+                method: 'GET',
+                success: function(response) {
+                    $(".main-content").html(response);
+                },
+                error: function() {
+                    $(".main-content").html("<h1>Failed to load " + page + "</h1>");
+                }
+            });
+        }
+
+        // SLIDER FUNCTIONALITY
+        let currentIndex = 0;
+        const slides = document.querySelector('.slides');
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        function moveSlide(step) {
+            currentIndex += step;
+            if (currentIndex < 0) {
+                currentIndex = totalSlides - 1;
+            } else if (currentIndex >= totalSlides) {
+                currentIndex = 0;
+            }
+            updateSlider();
+        }
+
+        function updateSlider() {
+            const offset = -currentIndex * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        function autoSlide() {
+            moveSlide(1);
+        }
+
+        setInterval(autoSlide, 3000); // Auto-slide every 8 seconds
+    </script>
+
+</body>
+</html>

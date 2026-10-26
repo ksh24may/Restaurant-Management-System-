@@ -1,0 +1,64 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial, sans-serif; text-align: center; }
+        h1 { color: #ff6600; }
+        .container { width: 80%; margin: auto; padding: 20px; }
+        .order { background: #292929; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: left; }
+        .order h3 { margin: 0 0 10px; color: #ff6600; }
+        .order-status { display: flex; justify-content: space-between; margin-top: 10px; }
+        .status { padding: 8px; border-radius: 5px; font-size: 14px; }
+        .placed { background: #ffaa00; }
+        .preparing { background: #0099ff; }
+        .out-for-delivery { background: #ffcc00; }
+        .delivered { background: #00cc66; }
+        .btn { background: #ff6600; color: white; padding: 10px; border: none; cursor: pointer; }
+        .btn:hover { background: #cc5200; }
+    </style>
+</head>
+<body>
+    <h1>🛒 Your Orders</h1>
+    <div class="container" id="ordersContainer"></div>
+    <script>
+        let orders = JSON.parse(localStorage.getItem("orders")) || [];
+        orders = orders.map((item, index) => ({ id: 100 + index, name: item.name, status: "Order Placed" }));
+
+        function loadOrders() {
+            const container = document.getElementById("ordersContainer");
+            container.innerHTML = "";
+            orders.forEach(order => {
+                container.innerHTML += `
+                    <div class="order">
+                        <h3>Order #${order.id} - ${order.name}</h3>
+                        <div class="order-status">
+                            <span class="status ${getStatusClass(order.status)}">${order.status}</span>
+                            <button class="btn" onclick="updateStatus(${order.id})">🔄 Update Status</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function getStatusClass(status) {
+            if (status === "Order Placed") return "placed";
+            if (status === "Preparing") return "preparing";
+            if (status === "Out for Delivery") return "out-for-delivery";
+            if (status === "Delivered") return "delivered";
+        }
+
+        function updateStatus(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order.status === "Order Placed") order.status = "Preparing";
+            else if (order.status === "Preparing") order.status = "Out for Delivery";
+            else if (order.status === "Out for Delivery") order.status = "Delivered";
+            loadOrders();
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>

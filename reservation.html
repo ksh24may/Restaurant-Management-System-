@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Reservations</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #ff6600; }
+
+        /* Table Layout */
+        .tables { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px; }
+        .table { width: 100px; height: 100px; background: green; color: white; font-size: 18px; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 10px; }
+        .reserved { background: red !important; cursor: not-allowed; }
+
+        /* Form */
+        .reservation-form { background: #292929; padding: 20px; width: 300px; margin: 20px auto; border-radius: 10px; display: none; }
+        .input { width: 100%; padding: 8px; margin: 10px 0; border: none; background: #1e1e1e; color: white; border-radius: 5px; }
+        .btn { background: #ff6600; color: white; padding: 8px; border: none; cursor: pointer; border-radius: 5px; }
+        .btn:hover { background: #cc5200; }
+    </style>
+</head>
+<body>
+
+    <h1>📅 Table Reservations</h1>
+
+    <div class="tables">
+        <!-- Tables will be dynamically created here -->
+    </div>
+
+    <div class="reservation-form" id="reservationForm">
+        <h2>Reserve Table <span id="selectedTable"></span></h2>
+        <input type="text" id="name" class="input" placeholder="Your Name">
+        <input type="email" id="email" class="input" placeholder="Your Email">
+        <button class="btn" onclick="confirmReservation()">Confirm Reservation</button>
+    </div>
+
+    <script>
+        let tables = [];
+        for (let i = 1; i <= 10; i++) {
+            tables.push({ id: i, reserved: false });
+        }
+
+        function loadTables() {
+            let tablesContainer = document.querySelector(".tables");
+            tablesContainer.innerHTML = "";
+            tables.forEach(table => {
+                let tableDiv = document.createElement("div");
+                tableDiv.classList.add("table");
+                tableDiv.innerText = "Table " + table.id;
+                if (table.reserved) tableDiv.classList.add("reserved");
+                tableDiv.onclick = () => selectTable(table.id);
+                tablesContainer.appendChild(tableDiv);
+            });
+        }
+
+        function selectTable(tableId) {
+            let table = tables.find(t => t.id === tableId);
+            if (table.reserved) return;
+            document.getElementById("selectedTable").innerText = tableId;
+            document.getElementById("reservationForm").style.display = "block";
+        }
+
+        function confirmReservation() {
+            let tableId = parseInt(document.getElementById("selectedTable").innerText);
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            if (!name || !email) {
+                alert("Please enter your name and email!");
+                return;
+            }
+
+            let table = tables.find(t => t.id === tableId);
+            table.reserved = true;
+            document.getElementById("reservationForm").style.display = "none";
+            loadTables();
+            alert(`Table ${tableId} reserved successfully!\nConfirmation email sent to ${email}`);
+        }
+
+        loadTables();
+    </script>
+
+</body>
+</html>

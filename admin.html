@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body { background: #f7f5f5; color: white; text-align: center; font-family: Arial, sans-serif; }
+        h1 { color: #ff6600; }
+        .container { width: 80%; margin: auto; padding: 20px; }
+        .section { padding: 15px; background: #292929; margin: 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .section:hover { background: #ff6600; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .table th, .table td { padding: 10px; border: 1px solid #fff; text-align: center; }
+        input { padding: 8px; margin: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Panel</h1>
+
+    <div class="container">
+        <!-- Employee Management -->
+        <div class="section">
+            <h2>👥 Employee Management</h2>
+            <input type="text" id="employeeName" placeholder="Enter Employee Name">
+            <button onclick="addEmployee()">➕ Add Employee</button>
+            <table class="table">
+                <thead>
+                    <tr><th>Employee Name</th><th>Action</th></tr>
+                </thead>
+                <tbody id="employeeList">
+                    <!-- Employees will be listed here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Order Analytics -->
+        <div class="section">
+            <h2>📊 Order Analytics</h2>
+            <p><strong>Today's Orders:</strong> <span id="orderCount">0</span></p>
+            <p><strong>Total Revenue:</strong> $<span id="revenue">0.00</span></p>
+            <button onclick="refreshStats()">🔄 Refresh Data</button>
+        </div>
+    </div>
+
+    <script>
+        let employees = [];
+        let orderCount = 45;
+        let revenue = 1240.50;
+
+        function addEmployee() {
+            let name = document.getElementById("employeeName").value;
+            if (name) {
+                employees.push(name);
+                updateEmployeeList();
+                document.getElementById("employeeName").value = "";
+            } else {
+                alert("Please enter an employee name.");
+            }
+        }
+
+        function updateEmployeeList() {
+            let list = document.getElementById("employeeList");
+            list.innerHTML = "";
+            employees.forEach((emp, index) => {
+                list.innerHTML += `<tr><td>${emp}</td><td><button onclick="removeEmployee(${index})">❌ Remove</button></td></tr>`;
+            });
+        }
+
+        function removeEmployee(index) {
+            employees.splice(index, 1);
+            updateEmployeeList();
+        }
+
+        function refreshStats() {
+            document.getElementById("orderCount").innerText = orderCount;
+            document.getElementById("revenue").innerText = revenue.toFixed(2);
+            alert("Analytics data refreshed!");
+        }
+    </script>
+
+</body>
+</html>

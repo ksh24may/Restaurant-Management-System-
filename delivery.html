@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Delivery</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #ff6600; }
+
+        /* Delivery Tracking */
+        .tracking-container { background: #292929; padding: 20px; width: 400px; margin: 20px auto; border-radius: 10px; }
+        .progress-bar { background: #1e1e1e; height: 10px; width: 100%; border-radius: 5px; margin-top: 10px; }
+        .progress { background: #ff6600; height: 100%; width: 0%; border-radius: 5px; transition: width 1s ease-in-out; }
+
+        /* Delivery Partner */
+        .delivery-info { margin-top: 20px; }
+        .partner { background: #1e1e1e; padding: 10px; border-radius: 10px; display: inline-block; margin-top: 10px; }
+        .partner img { width: 50px; height: 50px; border-radius: 50%; }
+        .partner h3 { margin: 10px 0 5px; }
+
+        /* Estimated Time */
+        .eta { font-size: 18px; font-weight: bold; margin-top: 10px; color: #ffcc00; }
+    </style>
+</head>
+<body>
+
+    <h1>🚴‍♂️ Order Delivery</h1>
+
+    <div class="tracking-container">
+        <h2>Tracking Your Order</h2>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <p id="status">Order Placed</p>
+    </div>
+
+    <div class="delivery-info">
+        <h2>Delivery Partner</h2>
+        <div class="partner">
+            <img src="https://via.placeholder.com/50" alt="Delivery Partner">
+            <h3 id="driverName">John Doe</h3>
+            <p>📞 <span id="driverPhone">+1 234 567 890</span></p>
+        </div>
+    </div>
+
+    <p class="eta">Estimated Delivery Time: <span id="eta">30 mins</span></p>
+
+    <script>
+        let progressStages = [
+            { status: "Order Placed", progress: 0 },
+            { status: "Preparing", progress: 30 },
+            { status: "Out for Delivery", progress: 70 },
+            { status: "Delivered", progress: 100 }
+        ];
+
+        let currentStage = 0;
+
+        function updateProgress() {
+            if (currentStage < progressStages.length) {
+                document.getElementById("status").innerText = progressStages[currentStage].status;
+                document.getElementById("progress").style.width = progressStages[currentStage].progress + "%";
+
+                if (progressStages[currentStage].status === "Delivered") {
+                    alert("Your order has been delivered!");
+                } else {
+                    setTimeout(updateProgress, 5000); // Move to next stage every 5 seconds
+                }
+
+                currentStage++;
+            }
+        }
+
+        updateProgress();
+    </script>
+
+</body>
+</html>

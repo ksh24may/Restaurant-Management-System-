@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiter Dashboard</title>
+    <style>
+        body { background: #121212; color: white; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #ff6600; }
+
+        /* Orders Section */
+        .orders-container { background: #292929; padding: 20px; width: 400px; margin: 20px auto; border-radius: 10px; }
+        .order { background: #1e1e1e; padding: 10px; border-radius: 5px; margin: 10px 0; text-align: left; }
+        .order p { margin: 5px 0; }
+
+        /* Tip Tracking */
+        .tips-container { background: #1e1e1e; padding: 20px; width: 300px; margin: 20px auto; border-radius: 10px; }
+        .tips-container input { width: 80%; padding: 5px; margin-top: 10px; }
+        .tips-container button { padding: 5px 10px; background: #ff6600; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        .tips-container button:hover { background: #ff4500; }
+
+        /* Performance Analytics */
+        .performance-container { margin-top: 20px; }
+        .stats { background: #1e1e1e; padding: 10px; border-radius: 5px; display: inline-block; margin: 5px; width: 120px; }
+    </style>
+</head>
+<body>
+
+    <h1>🧑‍🍳 Waiter Dashboard</h1>
+
+    <!-- Orders Section -->
+    <div class="orders-container">
+        <h2>Assigned Orders</h2>
+        <div id="orders">
+            <div class="order"><p>🍔 Order #101 - Table 3</p><p>Status: Pending</p></div>
+            <div class="order"><p>🥗 Order #102 - Table 5</p><p>Status: Preparing</p></div>
+        </div>
+    </div>
+
+    <!-- Tip Tracking -->
+    <div class="tips-container">
+        <h2>💰 Tip Tracking</h2>
+        <p>Total Tips: <span id="totalTips">₹0</span></p>
+        <input type="number" id="tipAmount" placeholder="Enter Tip Amount">
+        <button onclick="addTip()">Add Tip</button>
+    </div>
+
+    <!-- Performance Analytics -->
+    <div class="performance-container">
+        <h2>📊 Performance Analytics</h2>
+        <div class="stats"><p>Orders Served</p><p id="ordersServed">0</p></div>
+        <div class="stats"><p>Total Tips</p><p id="tipCount">₹0</p></div>
+    </div>
+
+    <script>
+        let totalTips = 0;
+        let ordersServed = 0;
+
+        function addTip() {
+            let tip = parseInt(document.getElementById("tipAmount").value);
+            if (!isNaN(tip) && tip > 0) {
+                totalTips += tip;
+                ordersServed++;
+                document.getElementById("totalTips").innerText = `₹${totalTips}`;
+                document.getElementById("tipCount").innerText = `₹${totalTips}`;
+                document.getElementById("ordersServed").innerText = ordersServed;
+                document.getElementById("tipAmount").value = "";
+            } else {
+                alert("Please enter a valid tip amount.");
+            }
+        }
+    </script>
+
+</body>
+</html>
